@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EasyFrame - 비디오 임베드 코드 생성기</title>
+  <meta name="description" content="YouTube와 Vimeo 비디오를 위한 임베드 코드를 쉽게 생성하는 도구입니다.">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#667eea">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎬 EasyFrame</h1>
+      <p class="subtitle">YouTube & Vimeo 비디오 임베드 코드 생성기</p>
+    </header>
+
+    <main>
+      <div class="form-section">
+        <div class="input-group">
+          <label for="videoUrl">비디오 URL</label>
+          <input type="text" id="videoUrl" placeholder="YouTube 또는 Vimeo URL을 입력하세요">
+          <div class="url-examples">
+            <small>예시: https://www.youtube.com/watch?v=VIDEO_ID 또는 https://vimeo.com/VIDEO_ID</small>
+          </div>
+        </div>
+
+        <div class="options-section">
+          <h3>옵션 설정</h3>
+          <div class="options-grid">
+            <label class="option-item">
+              <input type="checkbox" id="autoplay">
+              <span class="checkmark"></span>
+              자동재생
+            </label>
+            <label class="option-item">
+              <input type="checkbox" id="mute">
+              <span class="checkmark"></span>
+              음소거
+            </label>
+            <label class="option-item">
+              <input type="checkbox" id="hideControls">
+              <span class="checkmark"></span>
+              컨트롤 숨기기
+            </label>
+            <label class="option-item">
+              <input type="checkbox" id="hideRelated" checked>
+              <span class="checkmark"></span>
+              관련 동영상 숨기기
+            </label>
+          </div>
+        </div>
+
+        <div class="size-section">
+          <h3>크기 설정</h3>
+          <div class="size-inputs">
+            <div class="input-group">
+              <label for="width">너비 (px)</label>
+              <input type="number" id="width" value="560" min="200" max="1200">
+            </div>
+            <div class="input-group">
+              <label for="height">높이 (px)</label>
+              <input type="number" id="height" value="315" min="150" max="800">
+            </div>
+          </div>
+          <div class="preset-sizes">
+            <button class="preset-btn" data-width="560" data-height="315">16:9 (560×315)</button>
+            <button class="preset-btn" data-width="640" data-height="360">16:9 (640×360)</button>
+            <button class="preset-btn" data-width="800" data-height="450">16:9 (800×450)</button>
+            <button class="preset-btn" data-width="400" data-height="300">4:3 (400×300)</button>
+          </div>
+        </div>
+
+        <button id="generateBtn" class="generate-btn">
+          <span class="btn-text">코드 생성</span>
+          <span class="btn-icon">🚀</span>
+        </button>
+      </div>
+
+      <div class="result-section" id="resultSection" style="display: none;">
+        <h3>생성된 코드</h3>
+        <div class="code-container">
+          <textarea id="embedCode" readonly></textarea>
+          <button id="copyBtn" class="copy-btn">
+            <span class="copy-text">복사</span>
+            <span class="copy-icon">📋</span>
+          </button>
+        </div>
+        
+        <div class="preview-section">
+          <h3>미리보기</h3>
+          <div class="preview-container" id="preview"></div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <p>Made with ❤️ for content creators</p>
+      <p><small>YouTube와 Vimeo 비디오를 위한 임베드 코드를 쉽게 생성하세요.</small></p>
+    </footer>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="script.js"></script>
+</body>
+</html> 
