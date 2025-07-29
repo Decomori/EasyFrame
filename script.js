@@ -67,7 +67,10 @@ function generateYouTubeEmbedURL(videoId, options) {
   
   if (options.autoplay) params.append('autoplay', '1');
   if (options.mute) params.append('mute', '1');
-  if (options.hideControls) params.append('controls', '0');
+  if (options.hideControls) {
+    params.append('controls', '0');
+    params.append('showinfo', '0');
+  }
   if (options.hideRelated) params.append('rel', '0');
   
   // 기본 설정
@@ -97,7 +100,7 @@ function generateVimeoEmbedURL(videoId, options) {
 
 // iframe 코드 생성
 function generateIframeCode(embedUrl, width, height) {
-  return `<iframe width="${width}" height="${height}" src="${embedUrl}" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+  return `<iframe width="${width}" height="${height}" src="${embedUrl}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
 }
 
 // 토스트 메시지 표시
@@ -179,6 +182,7 @@ generateBtn.addEventListener('click', () => {
       showToast('올바른 YouTube URL이 아닙니다.', 'error');
       return;
     }
+    
     embedUrl = generateYouTubeEmbedURL(videoId, options);
   }
   // Vimeo 처리

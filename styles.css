@@ -162,6 +162,13 @@ main {
   font-weight: bold;
 }
 
+.option-note {
+  margin-left: auto;
+  color: #6b7280;
+  font-size: 0.8rem;
+  font-weight: 400;
+}
+
 /* Size section */
 .size-section {
   margin-bottom: 30px;
@@ -348,6 +355,14 @@ footer p {
   transform: translateX(400px);
   transition: transform 0.3s ease;
   z-index: 1000;
+}
+
+.toast.warning {
+  background: #f59e0b;
+}
+
+.toast.error {
+  background: #ef4444;
 }
 
 .toast.show {
