@@ -4,14 +4,25 @@ const autoplayCheckbox = document.getElementById('autoplay');
 const muteCheckbox = document.getElementById('mute');
 const hideControlsCheckbox = document.getElementById('hideControls');
 const hideRelatedCheckbox = document.getElementById('hideRelated');
+const loopCheckbox = document.getElementById('loop');
 const widthInput = document.getElementById('width');
-const heightInput = document.getElementById('height');
+const customWidthInput = document.getElementById('customWidth');
+const customHeightInput = document.getElementById('customHeight');
+const startTimeInput = document.getElementById('startTime');
+const endTimeInput = document.getElementById('endTime');
 const generateBtn = document.getElementById('generateBtn');
 const embedCodeTextarea = document.getElementById('embedCode');
 const copyBtn = document.getElementById('copyBtn');
 const resultSection = document.getElementById('resultSection');
 const previewContainer = document.getElementById('preview');
 const toast = document.getElementById('toast');
+
+// 현재 설정 상태
+let currentSettings = {
+  width: '100%',
+  ratio: '16:9',
+  align: 'center'
+};
 
 // YouTube ID 추출 함수
 function extractYouTubeID(url) {
@@ -70,12 +81,20 @@ function generateYouTubeEmbedURL(videoId, options) {
   if (options.hideControls) {
     params.append('controls', '0');
     params.append('showinfo', '0');
+    params.append('disablekb', '1'); // 키보드 컨트롤 비활성화
+    params.append('fs', '0'); // 전체화면 버튼 숨기기
   }
   if (options.hideRelated) params.append('rel', '0');
+  if (options.loop) {
+    params.append('loop', '1');
+    params.append('playlist', videoId); // YouTube에서 loop를 위해서는 playlist 파라미터도 필요
+  }
+  if (options.startTime) params.append('start', options.startTime.toString());
+  if (options.endTime) params.append('end', options.endTime.toString());
   
   // 기본 설정
   params.append('playsinline', '1');
-  params.append('modestbranding', '1');
+  // modestbranding은 지원 중단됨 - 제거
   
   const embedUrl = `https://www.youtube.com/embed/${videoId}`;
   return params.toString() ? `${embedUrl}?${params.toString()}` : embedUrl;
@@ -88,19 +107,98 @@ function generateVimeoEmbedURL(videoId, options) {
   if (options.autoplay) params.append('autoplay', '1');
   if (options.mute) params.append('muted', '1');
   if (options.hideControls) params.append('controls', '0');
+  if (options.loop) params.append('loop', '1');
   
   // 기본 설정
   params.append('title', '0');
   params.append('byline', '0');
   params.append('portrait', '0');
   
-  const embedUrl = `https://player.vimeo.com/video/${videoId}`;
-  return params.toString() ? `${embedUrl}?${params.toString()}` : embedUrl;
+  let embedUrl = `https://player.vimeo.com/video/${videoId}`;
+  
+  // Vimeo 시간 파라미터는 URL 끝에 추가
+  let timeParam = '';
+  if (options.startTime) {
+    timeParam = `#t=${options.startTime}s`;
+    if (options.endTime) {
+      timeParam += `,${options.endTime}s`;
+    }
+  } else if (options.endTime) {
+    timeParam = `#t=0s,${options.endTime}s`;
+  }
+  
+  const queryString = params.toString();
+  if (queryString) {
+    embedUrl += '?' + queryString;
+  }
+  if (timeParam) {
+    embedUrl += timeParam;
+  }
+  
+  return embedUrl;
 }
 
 // iframe 코드 생성
-function generateIframeCode(embedUrl, width, height) {
-  return `<iframe width="${width}" height="${height}" src="${embedUrl}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+function generateIframeCode(embedUrl, settings) {
+  const { width, ratio, align } = settings;
+  
+  // 정렬 스타일 결정
+  let alignStyle = '';
+  switch (align) {
+    case 'left':
+      alignStyle = 'margin: 0 auto 0 0;';
+      break;
+    case 'right':
+      alignStyle = 'margin: 0 0 0 auto;';
+      break;
+    default: // center
+      alignStyle = 'margin: 0 auto;';
+  }
+  
+  // 반응형 방식 (auto, 100%, 1200px, custom)
+  if (width !== 'custom' || ratio !== 'custom') {
+    let maxWidth = '1200px';
+    let paddingRatio = '56.25%'; // 16:9 기본
+    
+    // 너비 설정
+    if (width === '100%') {
+      maxWidth = '100%';
+    } else if (width === 'auto') {
+      maxWidth = 'auto'; // 설정 안함
+    } else if (widthInput.value) {
+      maxWidth = widthInput.value;
+    }
+    
+    // 비율 설정
+    switch (ratio) {
+      case '16:10':
+        paddingRatio = '62.5%'; // 10÷16×100
+        break;
+      case '4:3':
+        paddingRatio = '75%';
+        break;
+      case '1:1':
+        paddingRatio = '100%';
+        break;
+      default: // 16:9
+        paddingRatio = '56.25%';
+    }
+    
+    const widthStyle = `max-width: ${maxWidth}; `;
+    return `<div style="${widthStyle}${alignStyle}">
+  <div style="padding:${paddingRatio} 0 0 0; position:relative;">
+    <iframe src="${embedUrl}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute; top:0; left:0; width:100%; height:100%;"></iframe>
+  </div>
+</div>`;
+  }
+  
+  // 자유 비율 방식 (수동 입력)
+  const customWidth = customWidthInput.value || '560';
+  const customHeight = customHeightInput.value || '315';
+  
+  return `<div style="${alignStyle}">
+  <iframe width="${customWidth}" height="${customHeight}" src="${embedUrl}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>`;
 }
 
 // 토스트 메시지 표시
@@ -138,23 +236,61 @@ async function copyToClipboard(text) {
   }
 }
 
-// 프리셋 크기 버튼 이벤트
-document.querySelectorAll('.preset-btn').forEach(btn => {
+// 너비 설정 버튼 이벤트
+document.querySelectorAll('.width-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const width = btn.dataset.width;
-    const height = btn.dataset.height;
-    
-    widthInput.value = width;
-    heightInput.value = height;
     
     // 활성 상태 변경
-    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.width-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
+    
+    // 수동 입력 표시/숨김
+    const customInput = document.getElementById('customWidthInput');
+    if (width === 'custom') {
+      customInput.style.display = 'block';
+      widthInput.focus();
+    } else {
+      customInput.style.display = 'none';
+      // 'none'을 'auto'로 변환
+      currentSettings.width = width === 'none' ? 'auto' : width;
+    }
   });
 });
 
-// 기본 프리셋 활성화
-document.querySelector('[data-width="560"]').classList.add('active');
+// 비율 설정 버튼 이벤트
+document.querySelectorAll('.ratio-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const ratio = btn.dataset.ratio;
+    
+    // 활성 상태 변경
+    document.querySelectorAll('.ratio-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    // 수동 입력 표시/숨김
+    const customInput = document.getElementById('customRatioInput');
+    if (ratio === 'custom') {
+      customInput.style.display = 'block';
+      customWidthInput.focus();
+    } else {
+      customInput.style.display = 'none';
+      currentSettings.ratio = ratio;
+    }
+  });
+});
+
+// 정렬 설정 버튼 이벤트
+document.querySelectorAll('.align-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const align = btn.dataset.align;
+    
+    // 활성 상태 변경
+    document.querySelectorAll('.align-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    currentSettings.align = align;
+  });
+});
 
 // 코드 생성 버튼 이벤트
 generateBtn.addEventListener('click', () => {
@@ -166,11 +302,26 @@ generateBtn.addEventListener('click', () => {
     autoplay: autoplayCheckbox.checked,
     mute: muteCheckbox.checked,
     hideControls: hideControlsCheckbox.checked,
-    hideRelated: hideRelatedCheckbox.checked
+    hideRelated: hideRelatedCheckbox.checked,
+    loop: loopCheckbox.checked,
+    startTime: startTimeInput.value ? parseInt(startTimeInput.value) : null,
+    endTime: endTimeInput.value ? parseInt(endTimeInput.value) : null
   };
   
-  const width = widthInput.value || 560;
-  const height = heightInput.value || 315;
+  // 현재 설정 가져오기
+  const settings = {
+    width: currentSettings.width,
+    ratio: currentSettings.ratio,
+    align: currentSettings.align
+  };
+  
+  // 수동 입력 값 처리
+  if (settings.width === 'custom' && widthInput.value) {
+    settings.width = widthInput.value;
+  }
+  if (settings.ratio === 'custom') {
+    settings.ratio = 'custom';
+  }
   
   let embedUrl = '';
   let videoId = '';
@@ -196,11 +347,19 @@ generateBtn.addEventListener('click', () => {
   }
   
   // iframe 코드 생성
-  const iframeCode = generateIframeCode(embedUrl, width, height);
+  const iframeCode = generateIframeCode(embedUrl, settings);
   
   // 결과 표시
   embedCodeTextarea.value = iframeCode;
   previewContainer.innerHTML = iframeCode;
+  
+  // 컨트롤 숨기기 옵션에 따라 CSS 클래스 추가
+  if (options.hideControls) {
+    previewContainer.classList.add('controls-hidden');
+  } else {
+    previewContainer.classList.remove('controls-hidden');
+  }
+  
   resultSection.style.display = 'block';
   
   // 결과 섹션으로 스크롤
@@ -224,17 +383,23 @@ videoUrlInput.addEventListener('keypress', (e) => {
   }
 });
 
-// 입력 필드 유효성 검사
+// 수동 입력 필드 이벤트
 widthInput.addEventListener('input', () => {
-  const value = parseInt(widthInput.value);
-  if (value < 200) widthInput.value = 200;
-  if (value > 1200) widthInput.value = 1200;
+  if (widthInput.value) {
+    currentSettings.width = widthInput.value;
+  }
 });
 
-heightInput.addEventListener('input', () => {
-  const value = parseInt(heightInput.value);
-  if (value < 150) heightInput.value = 150;
-  if (value > 800) heightInput.value = 800;
+customWidthInput.addEventListener('input', () => {
+  if (customWidthInput.value && customHeightInput.value) {
+    currentSettings.ratio = 'custom';
+  }
+});
+
+customHeightInput.addEventListener('input', () => {
+  if (customWidthInput.value && customHeightInput.value) {
+    currentSettings.ratio = 'custom';
+  }
 });
 
 // 자동재생과 음소거 연동

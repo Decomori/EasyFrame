@@ -29,47 +29,132 @@
 
         <div class="options-section">
           <h3>옵션 설정</h3>
+          <div class="platform-legend">
+            <small>지원 플랫폼: <span class="platform-icon youtube">YT</span> YouTube | <span class="platform-icon vimeo">VM</span> Vimeo</small>
+          </div>
           <div class="options-grid">
             <label class="option-item">
               <input type="checkbox" id="autoplay">
               <span class="checkmark"></span>
               자동재생
+              <div class="platform-support">
+                <span class="platform-icon youtube">YT</span>
+                <span class="platform-icon vimeo">VM</span>
+              </div>
             </label>
             <label class="option-item">
               <input type="checkbox" id="mute">
               <span class="checkmark"></span>
               음소거
+              <div class="platform-support">
+                <span class="platform-icon youtube">YT</span>
+                <span class="platform-icon vimeo">VM</span>
+              </div>
             </label>
             <label class="option-item">
               <input type="checkbox" id="hideControls">
               <span class="checkmark"></span>
               컨트롤 숨기기
+              <div class="platform-support">
+                <span class="platform-icon youtube">YT</span>
+                <span class="platform-icon vimeo">VM</span>
+              </div>
             </label>
             <label class="option-item">
               <input type="checkbox" id="hideRelated" checked>
               <span class="checkmark"></span>
               관련 동영상 숨기기
+              <div class="platform-support">
+                <span class="platform-icon youtube">YT</span>
+                <span class="platform-icon vimeo disabled">VM</span>
+              </div>
+            </label>
+            <label class="option-item">
+              <input type="checkbox" id="loop">
+              <span class="checkmark"></span>
+              연속재생
+              <div class="platform-support">
+                <span class="platform-icon youtube">YT</span>
+                <span class="platform-icon vimeo">VM</span>
+              </div>
             </label>
           </div>
         </div>
 
         <div class="size-section">
           <h3>크기 설정</h3>
-          <div class="size-inputs">
-            <div class="input-group">
-              <label for="width">너비 (px)</label>
-              <input type="number" id="width" value="560" min="200" max="1200">
+          
+          <!-- 너비 설정 -->
+          <div class="width-section">
+            <h4>너비 설정</h4>
+            <div class="width-buttons">
+              <button class="width-btn active" data-width="100%">전체 너비</button>
+              <button class="width-btn" data-width="custom">수동 입력</button>
+              <button class="width-btn" data-width="none">설정 안함</button>
             </div>
-            <div class="input-group">
-              <label for="height">높이 (px)</label>
-              <input type="number" id="height" value="315" min="150" max="800">
+            <div class="custom-width-input" id="customWidthInput" style="display: none;">
+              <div class="input-group">
+                <label for="width">너비 값</label>
+                <input type="text" id="width" placeholder="예: 800px, 50%">
+                <div class="size-help">
+                  <small>px 단위 또는 % (예: 800px, 50%)</small>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="preset-sizes">
-            <button class="preset-btn" data-width="560" data-height="315">16:9 (560×315)</button>
-            <button class="preset-btn" data-width="640" data-height="360">16:9 (640×360)</button>
-            <button class="preset-btn" data-width="800" data-height="450">16:9 (800×450)</button>
-            <button class="preset-btn" data-width="400" data-height="300">4:3 (400×300)</button>
+          
+          <!-- 비율 설정 -->
+          <div class="ratio-section">
+            <h4>비율 설정</h4>
+            <div class="ratio-buttons">
+              <button class="ratio-btn active" data-ratio="16:9">16:9 (가로형)</button>
+              <button class="ratio-btn" data-ratio="16:10">16:10 (스마트폰형)</button>
+              <button class="ratio-btn" data-ratio="4:3">4:3 (전통형)</button>
+              <button class="ratio-btn" data-ratio="1:1">1:1 (정사각형)</button>
+              <button class="ratio-btn" data-ratio="custom">자유 비율</button>
+            </div>
+            <div class="custom-ratio-input" id="customRatioInput" style="display: none;">
+              <div class="ratio-inputs">
+                <div class="input-group">
+                  <label for="customWidth">너비</label>
+                  <input type="number" id="customWidth" placeholder="560" min="50">
+                </div>
+                <div class="input-group">
+                  <label for="customHeight">높이</label>
+                  <input type="number" id="customHeight" placeholder="315" min="50">
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 정렬 설정 -->
+          <div class="align-section">
+            <h4>정렬 설정</h4>
+            <div class="align-buttons">
+              <button class="align-btn active" data-align="center">중앙 정렬</button>
+              <button class="align-btn" data-align="left">좌측 정렬</button>
+              <button class="align-btn" data-align="right">우측 정렬</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="time-section">
+          <h3>재생 시간 설정</h3>
+          <div class="time-inputs">
+            <div class="input-group">
+              <label for="startTime">시작 시간 (초)</label>
+              <input type="number" id="startTime" placeholder="0" min="0" step="1">
+              <div class="time-help">
+                <small>예: 30 = 30초부터, 90 = 1분 30초부터</small>
+              </div>
+            </div>
+            <div class="input-group">
+              <label for="endTime">종료 시간 (초)</label>
+              <input type="number" id="endTime" placeholder="자동" min="0" step="1">
+              <div class="time-help">
+                <small>비워두면 끝까지 재생</small>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -97,8 +182,8 @@
     </main>
 
     <footer>
-      <p>Made with ❤️ for content creators</p>
-      <p><small>YouTube와 Vimeo 비디오를 위한 임베드 코드를 쉽게 생성하세요.</small></p>
+      <p>EasyFrame v1.0.0</p>
+      <p><small>YouTube와 Vimeo 비디오 임베드 코드 생성기</small></p>
     </footer>
   </div>
 

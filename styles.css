@@ -109,9 +109,26 @@ main {
   font-weight: 600;
 }
 
+.platform-legend {
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.platform-legend small {
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+.platform-legend .platform-icon {
+  width: 16px;
+  height: 16px;
+  font-size: 0.6rem;
+  margin: 0 2px;
+}
+
 .options-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 15px;
 }
 
@@ -169,6 +186,39 @@ main {
   font-weight: 400;
 }
 
+/* Platform support icons */
+.platform-support {
+  margin-left: auto;
+  display: flex;
+  gap: 4px;
+}
+
+.platform-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: white;
+  text-transform: uppercase;
+}
+
+.platform-icon.youtube {
+  background: #ff0000;
+}
+
+.platform-icon.vimeo {
+  background: #1ab7ea;
+}
+
+.platform-icon.disabled {
+  background: #9ca3af;
+  opacity: 0.5;
+}
+
 /* Size section */
 .size-section {
   margin-bottom: 30px;
@@ -181,21 +231,118 @@ main {
   font-weight: 600;
 }
 
-.size-inputs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-bottom: 20px;
+.size-section h4 {
+  margin-bottom: 12px;
+  color: #374151;
+  font-size: 1rem;
+  font-weight: 600;
 }
 
-.preset-sizes {
-  display: flex;
-  flex-wrap: wrap;
+/* Width section */
+.width-section {
+  margin-bottom: 25px;
+}
+
+.width-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.width-btn {
+  padding: 10px 12px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  background: white;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.width-btn:hover {
+  border-color: #667eea;
+  color: #667eea;
+}
+
+.width-btn.active {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+}
+
+.custom-width-input {
+  margin-top: 15px;
+  padding: 15px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  background: #f9fafb;
+}
+
+/* Ratio section */
+.ratio-section {
+  margin-bottom: 25px;
+}
+
+.ratio-buttons {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.ratio-btn {
+  padding: 10px 8px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  background: white;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.ratio-btn:hover {
+  border-color: #667eea;
+  color: #667eea;
+}
+
+.ratio-btn.active {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+}
+
+.custom-ratio-input {
+  margin-top: 15px;
+  padding: 15px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  background: #f9fafb;
+}
+
+.ratio-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+/* Align section */
+.align-section {
+  margin-bottom: 25px;
+}
+
+.align-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
 }
 
-.preset-btn {
-  padding: 8px 16px;
+.align-btn {
+  padding: 10px 16px;
   border: 2px solid #e5e7eb;
   border-radius: 8px;
   background: white;
@@ -206,15 +353,51 @@ main {
   font-weight: 500;
 }
 
-.preset-btn:hover {
+.align-btn:hover {
   border-color: #667eea;
   color: #667eea;
 }
 
-.preset-btn.active {
+.align-btn.active {
   background: #667eea;
   color: white;
   border-color: #667eea;
+}
+
+/* Time section */
+.time-section {
+  margin-bottom: 30px;
+}
+
+.time-section h3 {
+  margin-bottom: 15px;
+  color: #374151;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.time-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.time-help {
+  margin-top: 8px;
+}
+
+.time-help small {
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+.size-help {
+  margin-top: 8px;
+}
+
+.size-help small {
+  color: #6b7280;
+  font-size: 0.85rem;
 }
 
 /* Generate button */
@@ -319,15 +502,48 @@ main {
   border-radius: 12px;
   padding: 20px;
   background: #f9fafb;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 200px;
 }
 
+/* 기본 iframe 스타일 */
 .preview-container iframe {
+  max-width: 100%;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* 반응형 div 컨테이너 스타일 */
+.preview-container > div {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.preview-container > div > div {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* YouTube 컨트롤 숨기기 추가 스타일 */
+.preview-container.controls-hidden iframe {
+  /* 컨트롤 영역에 대한 마우스 이벤트 제한 */
+  pointer-events: auto;
+}
+
+/* 컨트롤 숨기기가 활성화된 경우 iframe 위에 투명한 오버레이 추가 */
+.preview-container.controls-hidden {
+  position: relative;
+}
+
+.preview-container.controls-hidden::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  pointer-events: none;
+  z-index: 1;
 }
 
 /* Footer */
@@ -383,21 +599,35 @@ footer p {
     font-size: 2.5rem;
   }
   
-  .size-inputs {
+  .time-inputs {
+    grid-template-columns: 1fr;
+  }
+  
+  .width-buttons {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .ratio-buttons {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .align-buttons {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .ratio-inputs {
     grid-template-columns: 1fr;
   }
   
   .options-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
   
-  .preset-sizes {
-    justify-content: center;
-  }
-  
-  .preset-btn {
+  .width-btn,
+  .ratio-btn,
+  .align-btn {
     font-size: 0.8rem;
-    padding: 6px 12px;
+    padding: 8px 10px;
   }
 }
 
@@ -417,5 +647,13 @@ footer p {
   .generate-btn {
     padding: 14px 20px;
     font-size: 1rem;
+  }
+  
+  .options-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .preset-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 } 
